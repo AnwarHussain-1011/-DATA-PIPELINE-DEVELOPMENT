@@ -1,0 +1,101 @@
+
+# Task 1: Data Pipeline - Iris Dataset
+
+This project demonstrates a basic data pipeline built using the **Iris dataset**. It includes loading data, handling missing values, detecting outliers, encoding categorical data, and scaling features.
+
+## 🧾 Steps Covered
+1. **Dataset Loading** using `sklearn.datasets`
+2. **Simulated Missing Values** and their treatment using column mean
+3. **Outlier Detection** using Z-score method
+4. **Label Encoding** of categorical variables
+5. **Feature Scaling** using `StandardScaler`
+6. **Saving Cleaned Dataset** to CSV
+
+## 📁 Output File
+- `cleaned_iris_data.csv` – Contains processed features and is saved in the same folder
+
+## ▶️ How to Run
+
+```bash
+# Clone the repo
+git clone https://github.com/your-username/DataScience-Internship.git
+cd DataScience-Internship
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the script
+python task1_data_pipeline.py
+
+
+
+# task1_data_pipeline.py
+
+import pandas as pd
+from sklearn import datasets
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+import numpy as np
+from scipy.stats import zscore
+
+# Step 1: Load Dataset (Iris Dataset)
+iris = datasets.load_iris()
+data = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+data['target'] = iris.target
+data['species'] = iris.target_names[iris.target]
+
+print("Original Data Head:")
+print(data.head())
+
+# Step 2: Handle Missing Values (Simulated)
+data.loc[5:10, 'sepal length (cm)'] = np.nan
+print("\nMissing values before filling:")
+print(data.isnull().sum())
+
+data['sepal length (cm)'].fillna(data['sepal length (cm)'].mean(), inplace=True)
+
+# Step 3: Outlier Detection (Z-score method)
+z_scores = np.abs(zscore(data.select_dtypes(include=[np.number])))
+outliers = (z_scores > 3)
+print("\nNumber of outliers (Z-score > 3):")
+print(outliers.sum())
+
+# Step 4: Encode Categorical Data
+label_encoder = LabelEncoder()
+data['species_encoded'] = label_encoder.fit_transform(data['species'])
+
+# Step 5: Feature Scaling
+features = ['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']
+scaler = StandardScaler()
+data_scaled = scaler.fit_transform(data[features])
+
+scaled_df = pd.DataFrame(data_scaled, columns=[f"{col}_scaled" for col in features])
+data = pd.concat([data.reset_index(drop=True), scaled_df], axis=1)
+
+# Step 6: Save Cleaned Data
+data.to_csv("cleaned_iris_data.csv", index=False)
+print("\nCleaned data saved to 'cleaned_iris_data.csv'")
+
+
+📦 Requirements
+See requirements.txt or install manually:
+pip install pandas numpy scikit-learn scipy
+🧠 Author
+Anwar Hussain – Data Science Intern at CODTECH IT SOLUTIONS
+
+                                               
+---
+
+### ✅ `requirements.txt` (Optional, but professional)
+
+
+ pandas
+numpy
+scikit-learn
+scipy
+
+                                               
+---
+
+
+
+
